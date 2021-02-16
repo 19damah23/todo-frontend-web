@@ -8,7 +8,7 @@
         </a>
       </div>
       <div class="frame-todo">
-        <button @click="addTodo" class="btn btn-success btn-add-todo">
+        <button @click="addTodo" class="btn btn-primary btn-add-todo">
           + Add Todo
         </button>
 
@@ -16,17 +16,28 @@
       </div>
     </div>
     <div class="right">
+      <FormTodo />
     </div>
   </div>
 </template>
 
 <script>
 import ListTodo from '@/components/ListTodo.vue'
+import FormTodo from '@/components/FormTodo.vue'
 
 export default {
   name: 'App',
   components: {
     ListTodo,
+    FormTodo
+  },
+  methods: {
+    addTodo() {
+
+    },
+    saveTodo() {
+      console.log('value of prop');
+    }
   }
 }
 </script>
@@ -83,8 +94,20 @@ body {
   height: 85vh;
 }
 
+.btn-danger {
+  background: #FF0000	;
+}
+
 .btn-danger:hover {
   background: #c50000;
+}
+
+.btn-primary {
+  background: #0057ff;
+}
+
+.btn-primary:hover {
+  background: #0000ff;
 }
 
 .btn {
@@ -103,7 +126,6 @@ body {
   padding: 12px 10px;
   margin: 10px 15px;
   text-align: left !important;
-  background: #0057ff;
   color: #fff;
 }
 

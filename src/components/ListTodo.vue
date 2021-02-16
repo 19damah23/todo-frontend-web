@@ -2,7 +2,7 @@
   <div class="listTodo">
     <ul>
       <li v-for="todo in todos" :key="todo.id">
-        <button class="btn-todo">
+        <button class="btn-todo" @click="editTodo(todo.id)">
           <label>{{ todo.title }}</label>
           <span>{{ todo.description }}</span>
         </button>
@@ -12,27 +12,32 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from "axios";
 
 export default {
-  name: 'ListTodo',
+  name: "ListTodo",
   data: function () {
     return {
-      todos: []
-    }
+      todos: [],
+    };
   },
   methods: {
     setTodos(data) {
       this.todos = data;
-    }
+    },
+    editTodo(id) {
+      let dataForm = this.todos.find((todo) => todo.id === id);
+
+      this.$root.$emit("emitForm", dataForm);
+    },
   },
   mounted() {
     axios
       .get("http://127.0.0.1:8000/api/todos")
       .then((response) => this.setTodos(response.data))
       .catch((error) => console.log(error));
-  }
-}
+  },
+};
 </script>
 
 <style>

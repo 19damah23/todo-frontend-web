@@ -32,6 +32,16 @@ export default {
     },
   },
   mounted() {
+    this.$root.$on("emitSaveNote", (data) => {
+      let newTodo = {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+      };
+
+      this.todos.push(newTodo);
+    });
+
     axios
       .get("http://127.0.0.1:8000/api/todos")
       .then((response) => this.setTodos(response.data))

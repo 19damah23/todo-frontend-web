@@ -44,13 +44,17 @@ export default {
     submitTodo(e) {
       e.preventDefault();
 
+      let data = {
+        title: this.title,
+        description: this.description,
+      };
+
       axios.post("http://localhost:8000/api/add-todo", {
-        title: "" + this.title,
-        description: "" + this.description,
+        title: data.title,
+        description: data.description,
       });
 
-      this.title = "";
-      this.description = "";
+      this.$root.$emit("emitSaveNote", data);
     },
   },
   mounted() {

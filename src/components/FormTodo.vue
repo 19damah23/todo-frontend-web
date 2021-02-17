@@ -1,9 +1,30 @@
 <template>
   <div class="formTodo">
-    <form @submit="submitTodo">
+    <form>
       <div class="menu">
-        <button type="button" class="btn btn-danger btn-delete">Delete</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button
+          type="button"
+          @click="submitRemove"
+          class="btn btn-danger btn-delete"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          @click="submitSave"
+          v-if="mode == 'save'"
+          class="btn btn-primary"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          @click="submitUpdate"
+          v-if="mode == 'update'"
+          class="btn btn-primary"
+        >
+          Update
+        </button>
       </div>
 
       <div class="content">
@@ -26,35 +47,52 @@
 
 <script>
 import axios from "axios";
-
 export default {
   name: "FormTodo",
-  props: {
-    propSaveNote: {
-      type: Function,
-    },
-  },
   data: function () {
     return {
+      id: 0,
       title: "",
       description: "",
+      mode: "save",
     };
   },
   methods: {
-    submitTodo(e) {
-      e.preventDefault();
+    submitSave() {
+      let params = new URLSearchParams();
+      params.append("title", this.title);
+      params.append("description", this.description);
 
+      axios
+        .post("http://127.0.0.1:8000/api/add-todo", params)
+        .then((response) => {
+          let data = {
+            id: response.data.id,
+            title: this.title,
+            description: this.description,
+          };
+          this.$root.$emit("emitSaveTodo", data);
+        });
+    },
+    submitUpdate() {
       let data = {
         title: this.title,
         description: this.description,
+        id: this.id,
       };
 
-      axios.post("http://localhost:8000/api/add-todo", {
-        title: data.title,
-        description: data.description,
-      });
+      this.$root.$emit("emitUpdateTodo", data);
+    },
+    submitRemove() {
+      let data = { id: this.id };
+      this.$root.$emit("emitRemoveTodo", data);
 
-      this.$root.$emit("emitSaveNote", data);
+      this.resetInput();
+    },
+    resetInput() {
+      this.id = 0;
+      this.title = "";
+      this.description = "";
     },
   },
   mounted() {
@@ -62,6 +100,7 @@ export default {
       this.id = data.id;
       this.title = data.title;
       this.description = data.description;
+      this.mode = data.mode;
     });
   },
 };

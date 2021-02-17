@@ -1,10 +1,10 @@
 <template>
   <div class="listTodo">
     <ul>
-      <li v-for="todo in todos" :key="todo.id">
-        <button class="btn-todo" @click="editTodo(todo.id)">
-          <label>{{ todo.title }}</label>
-          <span>{{ todo.description }}</span>
+      <li v-for="(row, index) in todos" :key="index">
+        <button @click="editTodo(row.id)" class="btn-todo">
+          <label>{{ row.title }}</label>
+          <span>{{ row.description }}</span>
         </button>
       </li>
     </ul>
@@ -13,7 +13,6 @@
 
 <script>
 import axios from "axios";
-
 export default {
   name: "ListTodo",
   data: function () {
@@ -22,30 +21,43 @@ export default {
     };
   },
   methods: {
-    setTodos(data) {
-      this.todos = data;
-    },
     editTodo(id) {
       let dataForm = this.todos.find((todo) => todo.id === id);
+      dataForm.mode = "update";
 
       this.$root.$emit("emitForm", dataForm);
     },
+    getData() {
+      axios.get("http://127.0.0.1:8000/api/todos").then((response) => {
+        this.todos = response.data;
+      });
+    },
   },
   mounted() {
-    this.$root.$on("emitSaveNote", (data) => {
+    this.getData();
+
+    this.$root.$on("emitRemoveTodo", (data) => {
+      let todoIndex = this.todos.findIndex((todo) => todo.id === data.id);
+      this.todos.splice(todoIndex, 1);
+    });
+
+    this.$root.$on("emitUpdateTodo", (data) => {
+      let todoIndex = this.todos.findIndex((todo) => todo.id === data.id);
+
+      this.todos[todoIndex].title = data.title;
+      this.todos[todoIndex].description = data.description;
+    });
+
+    this.$root.$on("emitSaveTodo", (data) => {
       let newTodo = {
         id: data.id,
         title: data.title,
         description: data.description,
       };
 
-      this.todos.push(newTodo);
+      this.todos.unshift(newTodo);
+      this.editTodo(data.id);
     });
-
-    axios
-      .get("http://127.0.0.1:8000/api/todos")
-      .then((response) => this.setTodos(response.data))
-      .catch((error) => console.log(error));
   },
 };
 </script>

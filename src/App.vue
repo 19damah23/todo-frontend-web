@@ -3,12 +3,11 @@
     <div class="left">
       <div class="logo">
         <a href="">
-          <H2>Sulkus<span>todo</span>
-          </H2>
+          <H2>Sulkus<span>todo</span> </H2>
         </a>
       </div>
       <div class="frame-todo">
-        <button @click="addTodo" class="btn btn-primary btn-add-todo">
+        <button @click="newTodo" class="btn btn-primary btn-add-todo">
           + Add Todo
         </button>
 
@@ -22,24 +21,31 @@
 </template>
 
 <script>
-import ListTodo from '@/components/ListTodo.vue'
-import FormTodo from '@/components/FormTodo.vue'
+import ListTodo from "@/components/ListTodo.vue";
+import FormTodo from "@/components/FormTodo.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+  data: function () {
+    return {};
+  },
   components: {
     ListTodo,
-    FormTodo
+    FormTodo,
   },
   methods: {
-    addTodo() {
+    newTodo() {
+      let dataForm = {
+        id: 0,
+        title: "",
+        description: "",
+        mode: "save"
+      };
 
+      this.$root.$emit("emitForm", dataForm);
     },
-    saveTodo() {
-      console.log('value of prop');
-    }
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -54,7 +60,6 @@ body {
   display: flex;
   color: #2e3c50;
   widows: 100%;
-
 }
 
 .left {
@@ -95,7 +100,7 @@ body {
 }
 
 .btn-danger {
-  background: #FF0000	;
+  background: #ff0000;
 }
 
 .btn-danger:hover {
@@ -141,14 +146,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f7f7f7;
+  color: #fff;
 }
 
 ::-webkit-scrollbar-thumb {
-  color: #888;
+  background: #888;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  color: #555;
+  background: #555;
 }
 </style>

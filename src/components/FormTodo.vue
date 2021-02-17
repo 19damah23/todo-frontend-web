@@ -28,7 +28,7 @@
       </div>
 
       <div class="content">
-        <input type="hidden" v-model="id" />
+        <input type="text" v-model="id" />
         <input
           type="text"
           class="text"
@@ -64,7 +64,7 @@ export default {
       params.append("description", this.description);
 
       axios
-        .post("http://127.0.0.1:8000/api/add-todo", params)
+        .post("http://127.0.0.1:8000/api/todos", params)
         .then((response) => {
           let data = {
             id: response.data.id,
@@ -75,13 +75,21 @@ export default {
         });
     },
     submitUpdate() {
-      let data = {
-        title: this.title,
-        description: this.description,
-        id: this.id,
-      };
+      let params = new URLSearchParams();
+      params.append("id", this.id);
+      params.append("title", this.title);
+      params.append("description", this.description);
 
-      this.$root.$emit("emitUpdateTodo", data);
+      axios
+        .put(`http://127.0.0.1:8000/api/todos/${this.id}`, params)
+        .then((response) => {
+          let data = {
+            id: response.data.id,
+            title: this.title,
+            description: this.description,
+          };
+          this.$root.$emit("emitUpdateTodo", data);
+        });
     },
     submitRemove() {
       let data = { id: this.id };

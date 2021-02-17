@@ -63,16 +63,14 @@ export default {
       params.append("title", this.title);
       params.append("description", this.description);
 
-      axios
-        .post("http://127.0.0.1:8000/api/todos", params)
-        .then((response) => {
-          let data = {
-            id: response.data.id,
-            title: this.title,
-            description: this.description,
-          };
-          this.$root.$emit("emitSaveTodo", data);
-        });
+      axios.post("http://127.0.0.1:8000/api/todos", params).then((response) => {
+        let data = {
+          id: response.data.id,
+          title: this.title,
+          description: this.description,
+        };
+        this.$root.$emit("emitSaveTodo", data);
+      });
     },
     submitUpdate() {
       let params = new URLSearchParams();
@@ -92,10 +90,18 @@ export default {
         });
     },
     submitRemove() {
-      let data = { id: this.id };
-      this.$root.$emit("emitRemoveTodo", data);
+      let params = new URLSearchParams();
+      params.append("id", this.id);
 
-      this.resetInput();
+      axios
+        .delete(`http://127.0.0.1:8000/api/todos/${this.id}`, params)
+        .then((response) => {
+          let data = {
+            id: response.data.id,
+          };
+          this.$root.$emit("emitRemoveTodo", data);
+          this.resetInput();
+        });
     },
     resetInput() {
       this.id = 0;

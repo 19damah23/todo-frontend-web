@@ -28,7 +28,7 @@
       </div>
 
       <div class="content">
-        <input type="text" v-model="id" />
+        <input type="hidden" v-model="id" />
         <input
           type="text"
           class="text"
